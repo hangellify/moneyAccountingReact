@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import type { ReactElement } from 'react';
 import { Header } from '@/components/Header';
+import { RequireAuth } from '@/auth/RequireAuth';
 
 // Lazy load pages
 const Home = lazy(() =>
@@ -35,7 +36,7 @@ function App(): ReactElement {
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
