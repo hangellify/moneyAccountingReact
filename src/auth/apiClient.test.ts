@@ -63,7 +63,12 @@ describe('apiClient response interceptor — refresh flow', () => {
 
     // /auth/refresh hits the BASE axios (not apiClient), so we mock global axios.post.
     const refreshSpy = vi.spyOn(axios, 'post').mockResolvedValueOnce({
-      data: { access_token: 'new', refresh_token: 'rt-2', expires_in: 60, token_type: 'Bearer' },
+      data: {
+        access_token: 'new',
+        refresh_token: 'rt-2',
+        expires_in: 60,
+        token_type: 'Bearer',
+      },
     });
 
     let call = 0;
@@ -88,13 +93,20 @@ describe('apiClient response interceptor — refresh flow', () => {
     tokenStorage.setRefreshToken('rt-1');
 
     const refreshSpy = vi.spyOn(axios, 'post').mockResolvedValueOnce({
-      data: { access_token: 'new', refresh_token: 'rt-2', expires_in: 60, token_type: 'Bearer' },
+      data: {
+        access_token: 'new',
+        refresh_token: 'rt-2',
+        expires_in: 60,
+        token_type: 'Bearer',
+      },
     });
 
     const seen = new Set<string>();
     mock.onGet('/budgets').reply((config) => {
       const auth = String(config.headers?.Authorization);
-      if (!seen.has(auth)) { seen.add(auth); }
+      if (!seen.has(auth)) {
+        seen.add(auth);
+      }
       if (auth === 'Bearer old') return [401, { message: 'expired' }];
       return [200, [{ id: 1 }]];
     });
@@ -114,11 +126,17 @@ describe('apiClient response interceptor — refresh flow', () => {
 
   it('does NOT refresh on 401 from auth endpoints (login/register/refresh)', async () => {
     const refreshSpy = vi.spyOn(axios, 'post').mockResolvedValue({
-      data: { access_token: 'new', refresh_token: 'rt', expires_in: 60, token_type: 'Bearer' },
+      data: {
+        access_token: 'new',
+        refresh_token: 'rt',
+        expires_in: 60,
+        token_type: 'Bearer',
+      },
     });
     mock.onPost('/auth/login').reply(401, { message: 'bad creds' });
     await expect(apiClient.post('/auth/login', {})).rejects.toMatchObject({
-      status: 401, message: 'bad creds',
+      status: 401,
+      message: 'bad creds',
     });
     expect(refreshSpy).not.toHaveBeenCalled();
     refreshSpy.mockRestore();
@@ -129,15 +147,19 @@ describe('apiClient response interceptor — refresh flow', () => {
     tokenStorage.setRefreshToken('rt-1');
 
     vi.spyOn(axios, 'post').mockRejectedValueOnce(
-      Object.assign(new Error('refresh failed'), { response: { status: 401 } }),
+      Object.assign(new Error('refresh failed'), { response: { status: 401 } })
     );
     mock.onGet('/budgets').reply(401, { message: 'expired' });
 
     const events: Event[] = [];
-    const listener = (e: Event): void => { events.push(e); };
+    const listener = (e: Event): void => {
+      events.push(e);
+    };
     window.addEventListener(AUTH_LOGOUT_EVENT, listener);
 
-    await expect(apiClient.get('/budgets')).rejects.toMatchObject({ status: 401 });
+    await expect(apiClient.get('/budgets')).rejects.toMatchObject({
+      status: 401,
+    });
     expect(tokenStorage.getAccessToken()).toBeNull();
     expect(tokenStorage.getRefreshToken()).toBeNull();
     expect(events).toHaveLength(1);
@@ -150,24 +172,35 @@ describe('apiClient response interceptor — refresh flow', () => {
     tokenStorage.setRefreshToken('rt-1');
 
     const refreshSpy = vi.spyOn(axios, 'post').mockResolvedValueOnce({
-      data: { access_token: 'new', refresh_token: 'rt-2', expires_in: 60, token_type: 'Bearer' },
+      data: {
+        access_token: 'new',
+        refresh_token: 'rt-2',
+        expires_in: 60,
+        token_type: 'Bearer',
+      },
     });
 
     // Both attempts return 401 — interceptor should only retry once.
     mock.onGet('/budgets').reply(401, { message: 'expired' });
 
-    await expect(apiClient.get('/budgets')).rejects.toMatchObject({ status: 401 });
+    await expect(apiClient.get('/budgets')).rejects.toMatchObject({
+      status: 401,
+    });
     expect(refreshSpy).toHaveBeenCalledTimes(1);
     refreshSpy.mockRestore();
   });
 
   it('with no refresh token in storage, a 401 emits auth:logout and rejects', async () => {
     const events: Event[] = [];
-    const listener = (e: Event): void => { events.push(e); };
+    const listener = (e: Event): void => {
+      events.push(e);
+    };
     window.addEventListener(AUTH_LOGOUT_EVENT, listener);
 
     mock.onGet('/budgets').reply(401, { message: 'expired' });
-    await expect(apiClient.get('/budgets')).rejects.toMatchObject({ status: 401 });
+    await expect(apiClient.get('/budgets')).rejects.toMatchObject({
+      status: 401,
+    });
     expect(events).toHaveLength(1);
 
     window.removeEventListener(AUTH_LOGOUT_EVENT, listener);

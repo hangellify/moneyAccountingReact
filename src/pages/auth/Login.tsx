@@ -40,8 +40,9 @@ export function Login(): React.ReactElement {
         title: 'Login successful',
         description: 'Welcome back!',
       });
-      const from = (location.state as { from?: { pathname?: string } } | null)
-        ?.from?.pathname ?? '/dashboard';
+      const from =
+        (location.state as { from?: { pathname?: string } } | null)?.from
+          ?.pathname ?? '/dashboard';
       void navigate(from, { replace: true });
     } catch (error) {
       toast({

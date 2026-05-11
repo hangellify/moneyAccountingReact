@@ -5,9 +5,10 @@ import { RequireAuth } from './RequireAuth';
 
 // Render a controlled tree where AuthContext is mocked at the provider boundary.
 import { vi } from 'vitest';
+import type * as AuthContextModule from '@/contexts/AuthContext';
 vi.mock('@/contexts/AuthContext', async () => {
-  const actual = await vi.importActual<typeof import('@/contexts/AuthContext')>(
-    '@/contexts/AuthContext',
+  const actual = await vi.importActual<typeof AuthContextModule>(
+    '@/contexts/AuthContext'
   );
   return {
     ...actual,
@@ -17,8 +18,12 @@ vi.mock('@/contexts/AuthContext', async () => {
 import { useAuth } from '@/contexts/AuthContext';
 
 const profile = {
-  id: '1', email: 'a@b.c', first_name: 'A', currency: 'USD',
-  created_at: '2026-01-01', updated_at: '2026-01-01',
+  id: '1',
+  email: 'a@b.c',
+  first_name: 'A',
+  currency: 'USD',
+  created_at: '2026-01-01',
+  updated_at: '2026-01-01',
 } as const;
 
 function renderAt(initial: string): void {
@@ -28,10 +33,14 @@ function renderAt(initial: string): void {
         <Route path="/login" element={<div>login-page</div>} />
         <Route
           path="/dashboard"
-          element={<RequireAuth><div>secret</div></RequireAuth>}
+          element={
+            <RequireAuth>
+              <div>secret</div>
+            </RequireAuth>
+          }
         />
       </Routes>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 }
 
@@ -42,9 +51,16 @@ describe('RequireAuth', () => {
       <MemoryRouter initialEntries={['/dashboard']}>
         <Routes>
           <Route path="/login" element={<div>login-page</div>} />
-          <Route path="/dashboard" element={<RequireAuth><div>secret</div></RequireAuth>} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <div>secret</div>
+              </RequireAuth>
+            }
+          />
         </Routes>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(container.textContent).toBe('');
   });

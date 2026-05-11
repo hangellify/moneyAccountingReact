@@ -1,4 +1,4 @@
-import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { tokenStorage } from './tokenStorage';
 import { ApiError } from './apiError';
 import { env } from '@/lib/env';
@@ -25,7 +25,7 @@ async function runRefresh(): Promise<string> {
   const { data } = await axios.post<TokenResponseDto>(
     `${env.apiUrl}/auth/refresh`,
     { refresh_token },
-    { headers: { 'Content-Type': 'application/json' } },
+    { headers: { 'Content-Type': 'application/json' } }
   );
   tokenStorage.setTokenResponse(data);
   return data.access_token;
@@ -33,7 +33,9 @@ async function runRefresh(): Promise<string> {
 
 function refreshAccessToken(): Promise<string> {
   if (!refreshInFlight) {
-    refreshInFlight = runRefresh().finally(() => { refreshInFlight = null; });
+    refreshInFlight = runRefresh().finally(() => {
+      refreshInFlight = null;
+    });
   }
   return refreshInFlight;
 }
@@ -44,7 +46,8 @@ apiClient.interceptors.response.use(
   (r) => r,
   async (err: AxiosError) => {
     const original = err.config as
-      (InternalAxiosRequestConfig & { _retried?: boolean }) | undefined;
+      | (InternalAxiosRequestConfig & { _retried?: boolean })
+      | undefined;
     const status = err.response?.status;
     const url = original?.url ?? '';
     const isAuthEndpoint = AUTH_PATHS.some((p) => url.includes(p));
@@ -61,11 +64,13 @@ apiClient.interceptors.response.use(
       }
     }
 
-    const body = err.response?.data as { message?: string; code?: string } | undefined;
+    const body = err.response?.data as
+      | { message?: string; code?: string }
+      | undefined;
     // Note: when refresh failed above, we still reject here using the
     // original 401's body — not the refresh failure. Intentional.
-    return Promise.reject(new ApiError(
-      status, body?.code, body?.message ?? err.message, body,
-    ));
-  },
+    return Promise.reject(
+      new ApiError(status, body?.code, body?.message ?? err.message, body)
+    );
+  }
 );

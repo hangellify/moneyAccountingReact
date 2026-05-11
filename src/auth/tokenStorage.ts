@@ -17,8 +17,12 @@ export const tokenStorage = {
     accessTokenExpiresAt = null;
   },
   getRefreshToken: (): string | null => localStorage.getItem(REFRESH_KEY),
-  setRefreshToken(token: string): void { localStorage.setItem(REFRESH_KEY, token); },
-  clearRefreshToken(): void { localStorage.removeItem(REFRESH_KEY); },
+  setRefreshToken(token: string): void {
+    localStorage.setItem(REFRESH_KEY, token);
+  },
+  clearRefreshToken(): void {
+    localStorage.removeItem(REFRESH_KEY);
+  },
   setTokenResponse(res: TokenResponseDto): void {
     this.setAccessToken(res.access_token, res.expires_in);
     this.setRefreshToken(res.refresh_token);

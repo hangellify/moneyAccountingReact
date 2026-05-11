@@ -19,7 +19,7 @@ describe('tokenStorage', () => {
     tokenStorage.setAccessToken('abc', 60);
     expect(tokenStorage.getAccessToken()).toBe('abc');
     expect(tokenStorage.getAccessTokenExpiresAt()).toBe(
-      new Date('2026-05-08T00:01:00Z').getTime(),
+      new Date('2026-05-08T00:01:00Z').getTime()
     );
   });
 
@@ -30,8 +30,10 @@ describe('tokenStorage', () => {
 
   it('setTokenResponse writes both', () => {
     tokenStorage.setTokenResponse({
-      access_token: 'a', refresh_token: 'r',
-      expires_in: 30, token_type: 'Bearer',
+      access_token: 'a',
+      refresh_token: 'r',
+      expires_in: 30,
+      token_type: 'Bearer',
     });
     expect(tokenStorage.getAccessToken()).toBe('a');
     expect(localStorage.getItem(REFRESH_KEY)).toBe('r');
@@ -39,8 +41,10 @@ describe('tokenStorage', () => {
 
   it('clear() wipes both in-memory and localStorage', () => {
     tokenStorage.setTokenResponse({
-      access_token: 'a', refresh_token: 'r',
-      expires_in: 30, token_type: 'Bearer',
+      access_token: 'a',
+      refresh_token: 'r',
+      expires_in: 30,
+      token_type: 'Bearer',
     });
     tokenStorage.clear();
     expect(tokenStorage.getAccessToken()).toBeNull();
@@ -50,8 +54,10 @@ describe('tokenStorage', () => {
 
   it('clearAccessToken does NOT touch refresh token', () => {
     tokenStorage.setTokenResponse({
-      access_token: 'a', refresh_token: 'r',
-      expires_in: 30, token_type: 'Bearer',
+      access_token: 'a',
+      refresh_token: 'r',
+      expires_in: 30,
+      token_type: 'Bearer',
     });
     tokenStorage.clearAccessToken();
     expect(tokenStorage.getAccessToken()).toBeNull();

@@ -24,7 +24,7 @@ const strictPasswordSchema = z
   .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
   .regex(
     /[!@#$%^&*()_+\-=\\[\]{};':"\\|,.<>\\/?]/,
-    'Password must contain at least one symbol',
+    'Password must contain at least one symbol'
   );
 
 const loginPasswordSchema = z.string().min(1, 'Password is required');

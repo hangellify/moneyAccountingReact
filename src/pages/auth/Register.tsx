@@ -47,7 +47,7 @@ export function Register(): React.ReactElement {
         first_name: data.first_name.trim(),
       };
       if (data.last_name?.trim()) payload.last_name = data.last_name.trim();
-      if (data.username?.trim())  payload.username  = data.username.trim();
+      if (data.username?.trim()) payload.username = data.username.trim();
 
       await registerUser(payload);
       toast({
@@ -60,7 +60,8 @@ export function Register(): React.ReactElement {
       toast({
         variant: 'destructive',
         title: 'Registration failed',
-        description: error instanceof Error ? error.message : 'Registration failed',
+        description:
+          error instanceof Error ? error.message : 'Registration failed',
       });
     } finally {
       setIsLoading(false);

@@ -11,11 +11,17 @@ import type {
 
 export const authApi = {
   login: (p: LoginRequest): Promise<TokenResponseDto> =>
-    apiClient.post<TokenResponseDto>(AUTH_ENDPOINTS.LOGIN, p).then((r) => r.data),
+    apiClient
+      .post<TokenResponseDto>(AUTH_ENDPOINTS.LOGIN, p)
+      .then((r) => r.data),
   register: (p: RegisterRequest): Promise<TokenResponseDto> =>
-    apiClient.post<TokenResponseDto>(AUTH_ENDPOINTS.REGISTER, p).then((r) => r.data),
+    apiClient
+      .post<TokenResponseDto>(AUTH_ENDPOINTS.REGISTER, p)
+      .then((r) => r.data),
   refresh: (p: RefreshTokenRequest): Promise<TokenResponseDto> =>
-    apiClient.post<TokenResponseDto>(AUTH_ENDPOINTS.REFRESH, p).then((r) => r.data),
+    apiClient
+      .post<TokenResponseDto>(AUTH_ENDPOINTS.REFRESH, p)
+      .then((r) => r.data),
   logout: (p?: LogoutRequest): Promise<void> =>
     apiClient.post<void>(AUTH_ENDPOINTS.LOGOUT, p ?? {}).then(() => undefined),
   me: (): Promise<UserProfileDto> =>
