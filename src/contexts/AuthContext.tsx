@@ -93,8 +93,8 @@ export function AuthProvider({
 
   const logout = useCallback(async (): Promise<void> => {
     try {
-      const refresh_token = tokenStorage.getRefreshToken() ?? undefined;
-      await authApi.logout({ refresh_token });
+      const refresh_token = tokenStorage.getRefreshToken();
+      await authApi.logout(refresh_token ? { refresh_token } : {});
     } catch {
       // best-effort
     } finally {
