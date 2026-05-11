@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import MockAdapter from 'axios-mock-adapter';
 import { apiClient } from './apiClient';
 import { tokenStorage } from './tokenStorage';
+import { ApiError } from './apiError';
 
 let mock: MockAdapter;
 
@@ -27,5 +28,26 @@ describe('apiClient request interceptor', () => {
       return [200, []];
     });
     await apiClient.get('/budgets');
+  });
+});
+
+describe('apiClient response interceptor — error mapping', () => {
+  it('maps a 400 to ApiError with status, message, body', async () => {
+    mock.onPost('/budgets').reply(400, {
+      message: 'Validation failed',
+      code: 'VALIDATION',
+      errors: { name: ['required'] },
+    });
+    await expect(apiClient.post('/budgets', {})).rejects.toMatchObject({
+      name: 'ApiError',
+      status: 400,
+      code: 'VALIDATION',
+      message: 'Validation failed',
+    });
+  });
+
+  it('maps a 500 with no body to ApiError with axios message', async () => {
+    mock.onGet('/anything').reply(500);
+    await expect(apiClient.get('/anything')).rejects.toBeInstanceOf(ApiError);
   });
 });
