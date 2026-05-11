@@ -18,4 +18,6 @@ export const CURRENCY = {
 /**
  * Currency type (union of all currency values)
  */
-export type Currency = (typeof CURRENCY)[keyof typeof CURRENCY];
+export type Currency =
+  | (typeof CURRENCY)[keyof typeof CURRENCY]
+  | (string & {});

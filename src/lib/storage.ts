@@ -13,45 +13,19 @@ class StorageService {
     this.storage = localStorage;
   }
 
-  /**
-   * Set user information
-   * Serializes Date objects to ISO strings for storage
-   */
   setUserInfo(userInfo: UserProfileDto | null): void {
     if (userInfo) {
-      // Convert Date objects to ISO strings for storage
-      const serialized = {
-        ...userInfo,
-        created_at:
-          userInfo.created_at instanceof Date
-            ? userInfo.created_at.toISOString()
-            : userInfo.created_at,
-        updated_at:
-          userInfo.updated_at instanceof Date
-            ? userInfo.updated_at.toISOString()
-            : userInfo.updated_at,
-      };
-      this.storage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(serialized));
+      this.storage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(userInfo));
     } else {
       this.storage.removeItem(STORAGE_KEYS.USER_INFO);
     }
   }
 
-  /**
-   * Get user information
-   * Deserializes ISO strings back to Date objects
-   */
   getUserInfo(): UserProfileDto | null {
     const data = this.storage.getItem(STORAGE_KEYS.USER_INFO);
     if (!data) return null;
     try {
-      const parsed = JSON.parse(data) as UserProfileDto;
-      // Convert ISO strings back to Date objects
-      return {
-        ...parsed,
-        created_at: new Date(parsed.created_at),
-        updated_at: new Date(parsed.updated_at),
-      } as UserProfileDto;
+      return JSON.parse(data) as UserProfileDto;
     } catch {
       return null;
     }

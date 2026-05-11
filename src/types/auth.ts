@@ -1,9 +1,6 @@
 import type { Currency } from '@/const/currency';
 import type { LanguageCode } from '@/const/language';
 
-/**
- * Auth API Request Types
- */
 export interface LoginRequest {
   email: string;
   password: string;
@@ -18,17 +15,18 @@ export interface RegisterRequest {
 }
 
 export interface RefreshTokenRequest {
-  refreshToken: string;
+  refresh_token: string;
 }
 
-/**
- * Auth API Response Types
- */
+export interface LogoutRequest {
+  refresh_token?: string;
+}
+
 export interface TokenResponseDto {
   access_token: string;
   refresh_token: string;
   expires_in: number;
-  token_type: string;
+  token_type: 'Bearer';
 }
 
 export interface UserProfileDto {
@@ -39,11 +37,12 @@ export interface UserProfileDto {
   username?: string;
   currency: Currency;
   language_code?: LanguageCode;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface ErrorResponse {
   message: string;
+  code?: string;
   errors?: Record<string, string[]>;
 }
