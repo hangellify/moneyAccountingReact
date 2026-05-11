@@ -9,14 +9,14 @@ export const emailSchema = z
   .email('Please enter a valid email address');
 
 /**
- * Password validation schema
+ * Strict password schema (for registration)
  * Requirements:
  * - Minimum 8 characters
  * - At least one uppercase letter
  * - At least one lowercase letter
  * - At least one symbol
  */
-export const passwordSchema = z
+const strictPasswordSchema = z
   .string()
   .min(1, 'Password is required')
   .min(8, 'Password must be at least 8 characters long')
@@ -24,8 +24,10 @@ export const passwordSchema = z
   .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
   .regex(
     /[!@#$%^&*()_+\-=\\[\]{};':"\\|,.<>\\/?]/,
-    'Password must contain at least one symbol'
+    'Password must contain at least one symbol',
   );
+
+const loginPasswordSchema = z.string().min(1, 'Password is required');
 
 /**
  * First name validation schema
@@ -40,7 +42,7 @@ export const firstNameSchema = z
  */
 export const loginSchema = z.object({
   email: emailSchema,
-  password: passwordSchema,
+  password: loginPasswordSchema,
 });
 
 /**
@@ -48,7 +50,7 @@ export const loginSchema = z.object({
  */
 export const registerSchema = z.object({
   email: emailSchema,
-  password: passwordSchema,
+  password: strictPasswordSchema,
   first_name: firstNameSchema,
   last_name: z.string().optional(),
   username: z.string().optional(),

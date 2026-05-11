@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -11,19 +12,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useAuthFlow } from '@/hooks/use-auth-flow';
-import { authAPI } from './api';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
 import { loginSchema, type LoginFormData } from '@/lib/validation-schemas';
 import { Loader2 } from 'lucide-react';
 
 export function Login(): React.ReactElement {
   const [isLoading, setIsLoading] = useState(false);
-
-  const { executeAuthFlow } = useAuthFlow({
-    successTitle: 'Login successful',
-    successDescription: 'Welcome back!',
-    errorTitle: 'Login failed',
-  });
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -35,16 +33,22 @@ export function Login(): React.ReactElement {
 
   const onSubmit = async (data: LoginFormData): Promise<void> => {
     setIsLoading(true);
-
     try {
-      await executeAuthFlow(
-        authAPI.login({
-          email: data.email,
-          password: data.password,
-        })
-      );
-    } catch {
-      // Error is already handled in useAuthFlow
+      await login({ email: data.email, password: data.password });
+      toast({
+        variant: 'success',
+        title: 'Login successful',
+        description: 'Welcome back!',
+      });
+      const from = (location.state as { from?: { pathname?: string } } | null)
+        ?.from?.pathname ?? '/dashboard';
+      void navigate(from, { replace: true });
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Login failed',
+        description: error instanceof Error ? error.message : 'Login failed',
+      });
     } finally {
       setIsLoading(false);
     }

@@ -1,100 +1,100 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  type ReactNode,
+import {
+  createContext, useContext, useEffect, useState, useCallback,
+  type ReactNode, type ReactElement,
 } from 'react';
-import { storageService } from '@/lib/storage';
-import { authAPI } from '@/pages/auth/api';
-import { toast } from '@/hooks/use-toast';
-import type { UserProfileDto } from '@/types/auth';
+import { tokenStorage } from '@/auth/tokenStorage';
+import { AUTH_LOGOUT_EVENT } from '@/auth/apiClient';
+import { authApi } from '@/pages/auth/api';
+import type {
+  UserProfileDto, LoginRequest, RegisterRequest,
+} from '@/types/auth';
 
-interface AuthContextType {
-  user: UserProfileDto | null;
+const REFRESH_KEY = 'accounting_app_refresh_token';
+
+interface AuthContextValue {
+  user: UserProfileDto | null | undefined;
   isAuthenticated: boolean;
-  login: (
-    userInfo: UserProfileDto,
-    accessToken: string,
-    refreshToken: string
-  ) => void;
+  login: (payload: LoginRequest) => Promise<void>;
+  register: (payload: RegisterRequest) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export function AuthProvider({
-  children,
-}: {
-  children: ReactNode;
-}): React.ReactElement {
-  const [user, setUser] = useState<UserProfileDto | null>(() =>
-    storageService.getUserInfo()
-  );
-  const [isAuthenticated, setIsAuthenticated] = useState(() =>
-    storageService.isAuthenticated()
-  );
+export function AuthProvider({ children }: { children: ReactNode }): ReactElement {
+  const [user, setUser] = useState<UserProfileDto | null | undefined>(undefined);
 
-  const login = (
-    userInfo: UserProfileDto,
-    accessToken: string,
-    refreshToken: string
-  ): void => {
-    storageService.setUserInfo(userInfo);
-    storageService.setAccessToken(accessToken);
-    storageService.setRefreshToken(refreshToken);
-    setUser(userInfo);
-    setIsAuthenticated(true);
-  };
-
-  const logout = async (): Promise<void> => {
-    try {
-      const accessToken = storageService.getAccessToken();
-
-      // Call logout API if we have an access token
-      if (accessToken) {
-        await authAPI.logout(accessToken);
-      }
-
-      // Clear storage and state
-      storageService.clearAuth();
+  useEffect(() => {
+    if (!tokenStorage.getRefreshToken()) {
       setUser(null);
-      setIsAuthenticated(false);
-
-      // Show success toast
-      toast({
-        variant: 'success',
-        title: 'Logged out successfully',
-        description: 'You have been successfully logged out from the system',
-      });
-    } catch (error) {
-      // Even if API call fails, clear local storage
-      storageService.clearAuth();
-      setUser(null);
-      setIsAuthenticated(false);
-
-      // Show error toast but still log out locally
-      toast({
-        variant: 'destructive',
-        title: 'Logout warning',
-        description:
-          error instanceof Error
-            ? error.message
-            : 'Logged out locally, but server logout failed',
-      });
+      return;
     }
-  };
+    let cancelled = false;
+    authApi.me()
+      .then((p) => { if (!cancelled) setUser(p); })
+      .catch(() => {
+        if (cancelled) return;
+        tokenStorage.clear();
+        setUser(null);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    const onLogout = (): void => setUser(null);
+    const onStorage = (e: StorageEvent): void => {
+      if (e.key === REFRESH_KEY && e.newValue === null) {
+        tokenStorage.clearAccessToken();
+        setUser(null);
+      }
+    };
+    window.addEventListener(AUTH_LOGOUT_EVENT, onLogout);
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener(AUTH_LOGOUT_EVENT, onLogout);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
+
+  const login = useCallback(async (payload: LoginRequest): Promise<void> => {
+    const tokens = await authApi.login(payload);
+    tokenStorage.setTokenResponse(tokens);
+    const profile = await authApi.me();
+    setUser(profile);
+  }, []);
+
+  const register = useCallback(async (payload: RegisterRequest): Promise<void> => {
+    const tokens = await authApi.register(payload);
+    tokenStorage.setTokenResponse(tokens);
+    const profile = await authApi.me();
+    setUser(profile);
+  }, []);
+
+  const logout = useCallback(async (): Promise<void> => {
+    try {
+      const refresh_token = tokenStorage.getRefreshToken() ?? undefined;
+      await authApi.logout({ refresh_token });
+    } catch {
+      // best-effort
+    } finally {
+      tokenStorage.clear();
+      setUser(null);
+    }
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{
+      user,
+      isAuthenticated: user != null,
+      login, register, logout,
+    }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+export function useAuth(): AuthContextValue {
+  const v = useContext(AuthContext);
+  if (!v) throw new Error('useAuth must be used inside AuthProvider');
+  return v;
 }

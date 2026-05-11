@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -12,22 +13,19 @@ import {
   FormMessage,
   FormDescription,
 } from '@/components/ui/form';
-import { useAuthFlow } from '@/hooks/use-auth-flow';
-import { authAPI } from './api';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
 import {
   registerSchema,
   type RegisterFormData,
 } from '@/lib/validation-schemas';
 import { Loader2 } from 'lucide-react';
+import type { RegisterRequest } from '@/types/auth';
 
 export function Register(): React.ReactElement {
   const [isLoading, setIsLoading] = useState(false);
-
-  const { executeAuthFlow } = useAuthFlow({
-    successTitle: 'Registration successful',
-    successDescription: 'Your account has been created successfully!',
-    errorTitle: 'Registration failed',
-  });
+  const { register: registerUser } = useAuth();
+  const navigate = useNavigate();
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -42,31 +40,28 @@ export function Register(): React.ReactElement {
 
   const onSubmit = async (data: RegisterFormData): Promise<void> => {
     setIsLoading(true);
-
     try {
-      const registerData: {
-        email: string;
-        password: string;
-        first_name: string;
-        last_name?: string;
-        username?: string;
-      } = {
+      const payload: RegisterRequest = {
         email: data.email,
         password: data.password,
         first_name: data.first_name.trim(),
       };
+      if (data.last_name?.trim()) payload.last_name = data.last_name.trim();
+      if (data.username?.trim())  payload.username  = data.username.trim();
 
-      if (data.last_name?.trim()) {
-        registerData.last_name = data.last_name.trim();
-      }
-
-      if (data.username?.trim()) {
-        registerData.username = data.username.trim();
-      }
-
-      await executeAuthFlow(authAPI.register(registerData));
-    } catch {
-      // Error is already handled in useAuthFlow
+      await registerUser(payload);
+      toast({
+        variant: 'success',
+        title: 'Registration successful',
+        description: 'Your account has been created successfully!',
+      });
+      void navigate('/dashboard', { replace: true });
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Registration failed',
+        description: error instanceof Error ? error.message : 'Registration failed',
+      });
     } finally {
       setIsLoading(false);
     }
