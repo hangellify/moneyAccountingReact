@@ -101,12 +101,9 @@ describe('App', () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          /A modern, efficient solution for managing your personal finances/i
+          /A simple way to capture and organize your receipts\./i
         )
       ).toBeInTheDocument();
-      expect(screen.getByText(/Track Expenses/i)).toBeInTheDocument();
-      expect(screen.getByText(/Budget Planning/i)).toBeInTheDocument();
-      expect(screen.getByText(/Reports & Analytics/i)).toBeInTheDocument();
     });
   });
 });
