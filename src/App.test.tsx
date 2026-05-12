@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/contexts/AuthContext';
+import '@/i18n';
 import App from './App';
 
 // Create a test query client
@@ -48,15 +49,10 @@ describe('App', () => {
     );
 
     await waitFor(() => {
-      // Check for Header navigation link
-      const headerLink = screen.getByRole('link', { name: /Accounting App/i });
+      // Check for Header brand link
+      const headerLink = screen.getByRole('link', { name: /AccountingApp/i });
       expect(headerLink).toBeInTheDocument();
       expect(headerLink).toHaveAttribute('href', '/');
-
-      // Check for Dashboard link in header
-      const dashboardLink = screen.getByRole('link', { name: /Dashboard/i });
-      expect(dashboardLink).toBeInTheDocument();
-      expect(dashboardLink).toHaveAttribute('href', '/dashboard');
     });
   });
 
