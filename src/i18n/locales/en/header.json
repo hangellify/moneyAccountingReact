@@ -1,0 +1,17 @@
+{
+  "brand": "AccountingApp",
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "newBill": "New Bill"
+  },
+  "menu": {
+    "openMenu": "Open menu",
+    "userMenu": "User menu",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register"
+  }
+}

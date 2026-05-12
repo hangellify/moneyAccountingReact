@@ -1,0 +1,8 @@
+{
+  "aiUnavailable": {
+    "title": "AI service temporarily unavailable",
+    "description": "Please try again. Ref: {{requestId}}"
+  },
+  "uploadFailed": "Upload failed. Please try again.",
+  "sessionExpired": "Session expired"
+}

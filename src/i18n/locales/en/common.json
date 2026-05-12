@@ -1,0 +1,14 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "discard": "Discard",
+    "send": "Send",
+    "retry": "Try again"
+  },
+  "state": {
+    "loading": "Loading..."
+  }
+}
