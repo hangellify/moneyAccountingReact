@@ -6,7 +6,10 @@ import { CURRENCY } from '@/const/currency';
 import type { BillEdits } from '@/types/bills';
 
 interface BillReviewFieldsProps {
-  edits: Pick<BillEdits, 'market_name' | 'bill_date' | 'currency' | 'total_amount'>;
+  edits: Pick<
+    BillEdits,
+    'market_name' | 'bill_date' | 'currency' | 'total_amount'
+  >;
   onChange: (patch: Partial<BillEdits>) => void;
 }
 

@@ -2,13 +2,16 @@ import '@/i18n';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useEffect } from 'react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { NewBillReview } from './NewBillReview';
 import { useBillDraftStore } from '@/stores/billDraftStore';
 
 function LocationProbe(): null {
   const loc = useLocation();
-  document.body.dataset.pathname = loc.pathname;
+  useEffect(() => {
+    document.body.dataset.pathname = loc.pathname;
+  }, [loc.pathname]);
   return null;
 }
 
@@ -81,8 +84,6 @@ describe('NewBillReview', () => {
     await userEvent.type(marketInput, 'Rewe');
 
     await userEvent.click(screen.getByRole('button', { name: /cancel/i }));
-    expect(
-      await screen.findByText(/discard this bill\?/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/discard this bill\?/i)).toBeInTheDocument();
   });
 });

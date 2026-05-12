@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useEffect } from 'react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MockAdapter from 'axios-mock-adapter';
@@ -12,8 +13,9 @@ import '@/i18n';
 
 function LocationProbe(): null {
   const loc = useLocation();
-  // Expose current pathname for assertions via DOM
-  document.body.dataset.pathname = loc.pathname;
+  useEffect(() => {
+    document.body.dataset.pathname = loc.pathname;
+  }, [loc.pathname]);
   return null;
 }
 
@@ -46,7 +48,11 @@ function renderModal(onOpenChange = vi.fn()): {
   return { queryClient, onOpenChange };
 }
 
-function makeFile(name = 'receipt.jpg', type = 'image/jpeg', size = 1024): File {
+function makeFile(
+  name = 'receipt.jpg',
+  type = 'image/jpeg',
+  size = 1024
+): File {
   const f = new File(['x'], name, { type });
   Object.defineProperty(f, 'size', { value: size });
   return f;
@@ -78,9 +84,8 @@ describe('NewBillModal', () => {
     const send = screen.getByRole('button', { name: /send/i });
     expect(send).toBeDisabled();
 
-    const input = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
+    const input =
+      document.querySelector<HTMLInputElement>('input[type="file"]')!;
     await userEvent.upload(input, makeFile());
 
     expect(send).toBeEnabled();
@@ -88,9 +93,8 @@ describe('NewBillModal', () => {
 
   it('shows inline error and keeps Send disabled for oversized files', async () => {
     renderModal();
-    const input = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
+    const input =
+      document.querySelector<HTMLInputElement>('input[type="file"]')!;
     await userEvent.upload(
       input,
       makeFile('big.jpg', 'image/jpeg', 11 * 1024 * 1024)
@@ -108,9 +112,8 @@ describe('NewBillModal', () => {
 
   it('Cancel with a file opens the discard confirmation', async () => {
     renderModal();
-    const input = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
+    const input =
+      document.querySelector<HTMLInputElement>('input[type="file"]')!;
     await userEvent.upload(input, makeFile());
     await userEvent.click(screen.getByRole('button', { name: /cancel/i }));
     expect(
@@ -129,9 +132,8 @@ describe('NewBillModal', () => {
     });
 
     renderModal();
-    const input = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
+    const input =
+      document.querySelector<HTMLInputElement>('input[type="file"]')!;
     await userEvent.upload(input, makeFile());
     await userEvent.click(screen.getByRole('button', { name: /send/i }));
 
@@ -148,9 +150,8 @@ describe('NewBillModal', () => {
     });
 
     renderModal();
-    const input = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
+    const input =
+      document.querySelector<HTMLInputElement>('input[type="file"]')!;
     await userEvent.upload(input, makeFile());
     await userEvent.click(screen.getByRole('button', { name: /send/i }));
 

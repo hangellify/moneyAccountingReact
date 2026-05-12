@@ -1,4 +1,9 @@
-import { useRef, type ChangeEvent, type DragEvent, type ReactElement } from 'react';
+import {
+  useRef,
+  type ChangeEvent,
+  type DragEvent,
+  type ReactElement,
+} from 'react';
 import { ImageIcon, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';

@@ -29,7 +29,9 @@ function displayName(user: {
   return user.email;
 }
 
-export function UserMenu({ compact = false }: UserMenuProps): ReactElement | null {
+export function UserMenu({
+  compact = false,
+}: UserMenuProps): ReactElement | null {
   const { t } = useTranslation('header');
   const { user, logout } = useAuth();
 

@@ -10,7 +10,7 @@ interface BillItemsTableProps {
   onUpdateItem: (index: number, patch: Partial<BillEditItem>) => void;
 }
 
-const UNITS: Array<BillEditItem['unit']> = ['', 'kg', 'g', 'l', 'ml', 'piece'];
+const UNITS: BillEditItem['unit'][] = ['', 'kg', 'g', 'l', 'ml', 'piece'];
 
 export function BillItemsTable({
   items,

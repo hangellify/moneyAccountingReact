@@ -9,10 +9,10 @@ describe('ConfirmDialog', () => {
     render(
       <ConfirmDialog
         open
-        onOpenChange={() => {}}
+        onOpenChange={vi.fn()}
         title="Delete user?"
         description="This action cannot be undone."
-        onConfirm={() => {}}
+        onConfirm={vi.fn()}
       />
     );
     expect(screen.getByText('Delete user?')).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe('ConfirmDialog', () => {
     render(
       <ConfirmDialog
         open
-        onOpenChange={() => {}}
+        onOpenChange={vi.fn()}
         title="Proceed?"
         onConfirm={onConfirm}
       />
@@ -42,7 +42,7 @@ describe('ConfirmDialog', () => {
         open
         onOpenChange={onOpenChange}
         title="Proceed?"
-        onConfirm={() => {}}
+        onConfirm={vi.fn()}
       />
     );
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
@@ -53,11 +53,11 @@ describe('ConfirmDialog', () => {
     render(
       <ConfirmDialog
         open
-        onOpenChange={() => {}}
+        onOpenChange={vi.fn()}
         title="Discard?"
         confirmLabel="Discard"
         cancelLabel="Keep"
-        onConfirm={() => {}}
+        onConfirm={vi.fn()}
       />
     );
     expect(screen.getByRole('button', { name: 'Discard' })).toBeInTheDocument();
@@ -65,7 +65,7 @@ describe('ConfirmDialog', () => {
   });
 
   it('disables buttons while an async onConfirm is pending', async () => {
-    let resolve: () => void = () => {};
+    let resolve: () => void = vi.fn();
     const pending = new Promise<void>((r) => {
       resolve = r;
     });
@@ -73,7 +73,7 @@ describe('ConfirmDialog', () => {
     render(
       <ConfirmDialog
         open
-        onOpenChange={() => {}}
+        onOpenChange={vi.fn()}
         title="Proceed?"
         onConfirm={onConfirm}
       />

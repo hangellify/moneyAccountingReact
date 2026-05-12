@@ -75,9 +75,7 @@ export function NewBillReview(): ReactElement | null {
     <div className="container mx-auto px-4 py-6">
       <header className="mb-6">
         <h1 className="text-2xl font-bold">{t('bills:review.title')}</h1>
-        <p className="text-muted-foreground">
-          {t('bills:review.description')}
-        </p>
+        <p className="text-muted-foreground">{t('bills:review.description')}</p>
       </header>
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
@@ -92,14 +90,8 @@ export function NewBillReview(): ReactElement | null {
         </div>
 
         <div className="space-y-6">
-          <BillReviewFields
-            edits={edits}
-            onChange={handleEditsChange}
-          />
-          <BillItemsTable
-            items={edits.items}
-            onUpdateItem={handleItemChange}
-          />
+          <BillReviewFields edits={edits} onChange={handleEditsChange} />
+          <BillItemsTable items={edits.items} onUpdateItem={handleItemChange} />
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button type="button" variant="outline" onClick={handleCancel}>
               {t('common:actions.cancel')}

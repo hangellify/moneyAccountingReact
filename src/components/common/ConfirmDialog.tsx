@@ -11,6 +11,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 
+const noop = (): void => {
+  // Blocks dialog close while an async onConfirm is pending.
+};
+
 export interface ConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -45,10 +49,7 @@ export function ConfirmDialog({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={pending ? () => {} : onOpenChange}
-    >
+    <Dialog open={open} onOpenChange={pending ? noop : onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
