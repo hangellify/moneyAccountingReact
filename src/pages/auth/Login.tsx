@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -18,6 +19,7 @@ import { loginSchema, type LoginFormData } from '@/lib/validation-schemas';
 import { Loader2 } from 'lucide-react';
 
 export function Login(): React.ReactElement {
+  const { t } = useTranslation('auth');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -25,10 +27,7 @@ export function Login(): React.ReactElement {
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: { email: '', password: '' },
   });
 
   const onSubmit = async (data: LoginFormData): Promise<void> => {
@@ -37,8 +36,8 @@ export function Login(): React.ReactElement {
       await login({ email: data.email, password: data.password });
       toast({
         variant: 'success',
-        title: 'Login successful',
-        description: 'Welcome back!',
+        title: t('login.successTitle'),
+        description: t('login.successDescription'),
       });
       const from =
         (location.state as { from?: { pathname?: string } } | null)?.from
@@ -47,8 +46,9 @@ export function Login(): React.ReactElement {
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Login failed',
-        description: error instanceof Error ? error.message : 'Login failed',
+        title: t('login.failureTitle'),
+        description:
+          error instanceof Error ? error.message : t('login.failureTitle'),
       });
     } finally {
       setIsLoading(false);
@@ -56,30 +56,30 @@ export function Login(): React.ReactElement {
   };
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-md mx-auto">
+    <div className="container mx-auto px-4 py-8 md:py-16">
+      <div className="mx-auto max-w-md">
         <div className="space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold">Login</h1>
-            <p className="text-muted-foreground">
-              Enter your credentials to access your account
-            </p>
+          <div className="space-y-2 text-center">
+            <h1 className="text-2xl font-bold sm:text-3xl">
+              {t('login.title')}
+            </h1>
+            <p className="text-muted-foreground">{t('login.description')}</p>
           </div>
           <Form
             form={form}
             onSubmit={form.handleSubmit(onSubmit)}
-            className="rounded-lg border bg-card p-6 space-y-4"
+            className="space-y-4 rounded-lg border bg-card p-4 sm:p-6"
           >
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t('login.fields.email')}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="you@example.com"
+                      placeholder={t('login.fields.emailPlaceholder')}
                       disabled={isLoading}
                       {...field}
                     />
@@ -93,11 +93,11 @@ export function Login(): React.ReactElement {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t('login.fields.password')}</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder={t('login.fields.passwordPlaceholder')}
                       disabled={isLoading}
                       {...field}
                     />
@@ -110,10 +110,10 @@ export function Login(): React.ReactElement {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Logging in...
+                  {t('login.submitting')}
                 </>
               ) : (
-                'Login'
+                t('login.submit')
               )}
             </Button>
           </Form>

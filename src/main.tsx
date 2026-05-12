@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from '@/components/ui/toaster';
 import './index.css';
+import '@/i18n';
 import App from './App.tsx';
 
 const queryClient = new QueryClient({

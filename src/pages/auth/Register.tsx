@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -23,6 +24,7 @@ import { Loader2 } from 'lucide-react';
 import type { RegisterRequest } from '@/types/auth';
 
 export function Register(): React.ReactElement {
+  const { t } = useTranslation('auth');
   const [isLoading, setIsLoading] = useState(false);
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
@@ -52,16 +54,16 @@ export function Register(): React.ReactElement {
       await registerUser(payload);
       toast({
         variant: 'success',
-        title: 'Registration successful',
-        description: 'Your account has been created successfully!',
+        title: t('register.successTitle'),
+        description: t('register.successDescription'),
       });
       void navigate('/dashboard', { replace: true });
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Registration failed',
+        title: t('register.failureTitle'),
         description:
-          error instanceof Error ? error.message : 'Registration failed',
+          error instanceof Error ? error.message : t('register.failureTitle'),
       });
     } finally {
       setIsLoading(false);
@@ -69,30 +71,30 @@ export function Register(): React.ReactElement {
   };
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-md mx-auto">
+    <div className="container mx-auto px-4 py-8 md:py-16">
+      <div className="mx-auto max-w-md">
         <div className="space-y-6">
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold">Register</h1>
-            <p className="text-muted-foreground">
-              Create a new account to get started
-            </p>
+            <h1 className="text-2xl font-bold sm:text-3xl">
+              {t('register.title')}
+            </h1>
+            <p className="text-muted-foreground">{t('register.description')}</p>
           </div>
           <Form
             form={form}
             onSubmit={form.handleSubmit(onSubmit)}
-            className="rounded-lg border bg-card p-6 space-y-4"
+            className="rounded-lg border bg-card p-4 sm:p-6 space-y-4"
           >
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t('login.fields.email')}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="you@example.com"
+                      placeholder={t('login.fields.emailPlaceholder')}
                       disabled={isLoading}
                       {...field}
                     />
@@ -106,18 +108,17 @@ export function Register(): React.ReactElement {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t('login.fields.password')}</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder={t('login.fields.passwordPlaceholder')}
                       disabled={isLoading}
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Password must be at least 8 characters with uppercase,
-                    lowercase, and symbol
+                    {t('register.fields.passwordHint')}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -129,12 +130,13 @@ export function Register(): React.ReactElement {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    First Name <span className="text-destructive">*</span>
+                    {t('register.fields.firstName')}{' '}
+                    <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="John"
+                      placeholder={t('register.fields.firstNamePlaceholder')}
                       disabled={isLoading}
                       {...field}
                     />
@@ -148,11 +150,11 @@ export function Register(): React.ReactElement {
               name="last_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel>{t('register.fields.lastName')}</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Doe"
+                      placeholder={t('register.fields.lastNamePlaceholder')}
                       disabled={isLoading}
                       {...field}
                     />
@@ -166,11 +168,11 @@ export function Register(): React.ReactElement {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>{t('register.fields.username')}</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="johndoe"
+                      placeholder={t('register.fields.usernamePlaceholder')}
                       disabled={isLoading}
                       {...field}
                     />
@@ -183,10 +185,10 @@ export function Register(): React.ReactElement {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Registering...
+                  {t('register.submitting')}
                 </>
               ) : (
-                'Register'
+                t('register.submit')
               )}
             </Button>
           </Form>

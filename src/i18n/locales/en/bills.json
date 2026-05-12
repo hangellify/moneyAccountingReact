@@ -1,0 +1,42 @@
+{
+  "newBillModal": {
+    "title": "Upload new Bill",
+    "description": "Take a photo of your receipt — we'll parse the items, total, and date for you.",
+    "dropzone": {
+      "empty": "Drop an image here or click to browse",
+      "constraints": "JPEG / PNG / WEBP · up to 10 MB",
+      "remove": "Remove photo"
+    },
+    "pending": "Parsing receipt… this can take up to 10 seconds.",
+    "discardTitle": "Discard this photo?",
+    "discardDescription": "Your selection will be lost. You'll need to pick the photo again."
+  },
+  "validation": {
+    "unsupportedFormat": "Unsupported format. Use JPEG, PNG, or WEBP.",
+    "fileTooLarge": "File too large. Maximum size is 10 MB."
+  },
+  "review": {
+    "title": "Review bill",
+    "description": "Verify the extracted details and edit any fields before saving.",
+    "noDraftRedirect": "No bill in progress",
+    "fields": {
+      "marketName": "Market name",
+      "billDate": "Date",
+      "currency": "Currency",
+      "totalAmount": "Total amount"
+    },
+    "items": {
+      "heading": "Items",
+      "columns": {
+        "name": "Name",
+        "quantity": "Qty",
+        "unit": "Unit",
+        "finalPrice": "Price",
+        "category": "Category"
+      },
+      "lowConfidence": "Low category confidence"
+    },
+    "discardTitle": "Discard this bill?",
+    "discardDescription": "Your edits will be lost."
+  }
+}

@@ -1,63 +1,56 @@
-import React from 'react';
-
+import { useState, type ReactElement } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { DesktopNav } from '@/components/header/DesktopNav';
+import { MobileNav } from '@/components/header/MobileNav';
+import { UserMenu } from '@/components/header/UserMenu';
+import { NewBillModal } from '@/components/bills/NewBillModal';
 
-export function Header(): React.ReactElement {
-  const { user, logout } = useAuth();
-  const isAuthenticated = user != null;
+export function Header(): ReactElement {
+  const { t } = useTranslation('header');
+  const { isAuthenticated } = useAuth();
+  const [newBillOpen, setNewBillOpen] = useState(false);
 
-  const handleLogout = (): void => {
-    void logout();
-  };
+  const openNewBill = (): void => setNewBillOpen(true);
 
   return (
-    <header className="border-b bg-background">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Left side - Navigation links */}
-          <nav className="flex items-center gap-6">
-            <Link
-              to="/"
-              className="text-lg font-semibold hover:text-primary transition-colors"
-            >
-              Accounting App
-            </Link>
-            <Link
-              to="/dashboard"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Dashboard
-            </Link>
-          </nav>
+    <header className="sticky top-0 z-40 border-b bg-background">
+      <div className="container mx-auto flex h-14 items-center justify-between gap-2 px-4">
+        <div className="flex items-center gap-4">
+          {isAuthenticated && <MobileNav onOpenNewBill={openNewBill} />}
+          <Link to="/" className="text-lg font-semibold">
+            {t('brand')}
+          </Link>
+          {isAuthenticated && <DesktopNav onOpenNewBill={openNewBill} />}
+        </div>
 
-          {/* Right side - Auth buttons */}
-          <div className="flex items-center gap-4">
-            {isAuthenticated ? (
-              <>
-                <span className="text-sm text-muted-foreground">
-                  {user?.first_name
-                    ? `${user.first_name}${user.last_name ? ` ${user.last_name}` : ''}`
-                    : user?.email}
-                </span>
-                <Button variant="outline" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link to="/login">Login</Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/register">Register</Link>
-                </Button>
-              </>
-            )}
-          </div>
+        <div className="flex items-center gap-2">
+          {isAuthenticated ? (
+            <>
+              <div className="hidden md:block">
+                <UserMenu />
+              </div>
+              <div className="md:hidden">
+                <UserMenu compact />
+              </div>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link to="/login">{t('auth.login')}</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/register">{t('auth.register')}</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
+      {isAuthenticated && (
+        <NewBillModal open={newBillOpen} onOpenChange={setNewBillOpen} />
+      )}
     </header>
   );
 }

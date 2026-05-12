@@ -17,6 +17,11 @@ const Login = lazy(() =>
 const Register = lazy(() =>
   import('@/pages/auth/Register').then((m) => ({ default: m.Register }))
 );
+const NewBillReview = lazy(() =>
+  import('@/pages/bills/NewBillReview').then((m) => ({
+    default: m.NewBillReview,
+  }))
+);
 
 function LoadingFallback(): ReactElement {
   return (
@@ -41,6 +46,14 @@ function App(): ReactElement {
               element={
                 <RequireAuth>
                   <Dashboard />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/bills/review"
+              element={
+                <RequireAuth>
+                  <NewBillReview />
                 </RequireAuth>
               }
             />
