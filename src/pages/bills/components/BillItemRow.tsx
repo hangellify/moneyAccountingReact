@@ -12,8 +12,16 @@ interface BillItemRowProps {
   onChange: (patch: Partial<BillEditItem>) => void;
 }
 
-export function BillItemRow({ item, onChange }: BillItemRowProps): ReactElement {
+export function BillItemRow({
+  item,
+  index,
+  onChange,
+}: BillItemRowProps): ReactElement {
   const { t } = useTranslation('bills');
+  const cols = t('review.items.columns', { returnObjects: true }) as Record<
+    string,
+    string
+  >;
   return (
     <tr className="border-t">
       <td className="px-3 py-2">
@@ -47,6 +55,36 @@ export function BillItemRow({ item, onChange }: BillItemRowProps): ReactElement 
       </td>
       <td className="px-3 py-2 w-32">
         <Input
+          aria-label={cols.weightKg}
+          type="number"
+          step="0.001"
+          disabled={item.unit !== 'kg'}
+          value={item.weight_kg ?? ''}
+          onChange={(e) =>
+            onChange({
+              weight_kg: e.target.value === '' ? null : Number(e.target.value),
+            })
+          }
+        />
+      </td>
+      <td className="px-3 py-2 w-32">
+        <Input
+          aria-label={cols.pricePerKg}
+          type="number"
+          step="0.01"
+          disabled={item.unit !== 'kg'}
+          value={item.price_per_kg ?? ''}
+          onChange={(e) =>
+            onChange({
+              price_per_kg:
+                e.target.value === '' ? null : Number(e.target.value),
+            })
+          }
+        />
+      </td>
+      <td className="px-3 py-2 w-32">
+        <Input
+          data-testid={`item-final-price-${index}`}
           type="number"
           step="0.01"
           value={item.final_price}

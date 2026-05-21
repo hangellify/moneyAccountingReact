@@ -24,4 +24,24 @@ describe('BillItemCard (refactor parity)', () => {
     expect(screen.getByDisplayValue('Bread')).toBeInTheDocument();
     expect(screen.getByDisplayValue('1.2')).toBeInTheDocument();
   });
+
+  it('shows weight + price/kg fields only when unit is kg', () => {
+    const { rerender } = render(
+      <BillItemCard
+        item={makeItem({ unit: 'piece' })}
+        index={0}
+        onChange={vi.fn()}
+      />
+    );
+    expect(screen.queryByLabelText(/weight \(kg\)/i)).toBeNull();
+
+    rerender(
+      <BillItemCard
+        item={makeItem({ unit: 'kg', weight_kg: 0.5, price_per_kg: 10 })}
+        index={0}
+        onChange={vi.fn()}
+      />
+    );
+    expect(screen.getByLabelText(/weight \(kg\)/i)).toBeInTheDocument();
+  });
 });

@@ -31,6 +31,8 @@
         "name": "Name",
         "quantity": "Qty",
         "unit": "Unit",
+        "weightKg": "Weight (kg)",
+        "pricePerKg": "Price / kg",
         "finalPrice": "Price",
         "category": "Category"
       },

@@ -31,6 +31,8 @@ export function BillItemsTable({
               <th className="px-3 py-2">{cols.name}</th>
               <th className="px-3 py-2">{cols.quantity}</th>
               <th className="px-3 py-2">{cols.unit}</th>
+              <th className="px-3 py-2">{cols.weightKg}</th>
+              <th className="px-3 py-2">{cols.pricePerKg}</th>
               <th className="px-3 py-2">{cols.finalPrice}</th>
               <th className="px-3 py-2">{cols.category}</th>
             </tr>

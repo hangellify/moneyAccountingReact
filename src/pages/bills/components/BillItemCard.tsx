@@ -67,12 +67,47 @@ export function BillItemCard({
         <Label htmlFor={`item-${index}-price`}>{cols.finalPrice}</Label>
         <Input
           id={`item-${index}-price`}
+          data-testid={`item-final-price-${index}`}
           type="number"
           step="0.01"
           value={item.final_price}
           onChange={(e) => onChange({ final_price: Number(e.target.value) })}
         />
       </div>
+      {item.unit === 'kg' && (
+        <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-1">
+            <Label htmlFor={`item-${index}-weight`}>{cols.weightKg}</Label>
+            <Input
+              id={`item-${index}-weight`}
+              type="number"
+              step="0.001"
+              value={item.weight_kg ?? ''}
+              onChange={(e) =>
+                onChange({
+                  weight_kg:
+                    e.target.value === '' ? null : Number(e.target.value),
+                })
+              }
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor={`item-${index}-ppk`}>{cols.pricePerKg}</Label>
+            <Input
+              id={`item-${index}-ppk`}
+              type="number"
+              step="0.01"
+              value={item.price_per_kg ?? ''}
+              onChange={(e) =>
+                onChange({
+                  price_per_kg:
+                    e.target.value === '' ? null : Number(e.target.value),
+                })
+              }
+            />
+          </div>
+        </div>
+      )}
       <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
         {item.category_confidence < 0.5 && (
           <AlertTriangle

@@ -74,5 +74,17 @@ describe('BillItemRow (refactor parity)', () => {
     await userEvent.type(input, 'Sourdough');
     expect(onPatch).toHaveBeenLastCalledWith({ name: 'Sourdough' });
   });
+
+  it('disables weight + price/kg inputs when unit is not kg', () => {
+    renderRow(makeItem({ unit: 'piece', weight_kg: null, price_per_kg: null }));
+    expect(screen.getByLabelText(/weight \(kg\)/i)).toBeDisabled();
+    expect(screen.getByLabelText(/price \/ kg/i)).toBeDisabled();
+  });
+
+  it('enables weight + price/kg inputs when unit is kg', () => {
+    renderRow(makeItem({ unit: 'kg', weight_kg: 0.5, price_per_kg: 10 }));
+    expect(screen.getByLabelText(/weight \(kg\)/i)).not.toBeDisabled();
+    expect(screen.getByDisplayValue('0.5')).toBeInTheDocument();
+  });
 });
 
