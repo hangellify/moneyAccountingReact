@@ -34,7 +34,11 @@
         "finalPrice": "Price",
         "category": "Category"
       },
-      "lowConfidence": "Low category confidence"
+      "lowConfidence": "Low category confidence",
+      "subCategoryPlaceholder": "—",
+      "subCategoryLoading": "Loading categories…",
+      "subCategoryError": "Couldn't load categories",
+      "subCategoryRetry": "Retry"
     },
     "discardTitle": "Discard this bill?",
     "discardDescription": "Your edits will be lost."
