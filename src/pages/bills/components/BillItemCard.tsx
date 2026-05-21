@@ -1,8 +1,14 @@
 import type { ReactElement } from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { SubCategorySelect } from '@/components/categories/SubCategorySelect';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import type { BillEditItem } from '@/types/bills';
 
 const UNITS: BillEditItem['unit'][] = ['', 'kg', 'g', 'l', 'ml', 'piece'];
@@ -108,19 +114,42 @@ export function BillItemCard({
           </div>
         </div>
       )}
-      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-        {item.category_confidence < 0.5 && (
+      <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
+        {item.category_confidence < 0.5 && item.sub_category && (
           <AlertTriangle
-            className="h-4 w-4 text-yellow-600"
+            className="mt-2 h-4 w-4 shrink-0 text-yellow-600"
             aria-label={t('review.items.lowConfidence')}
           />
         )}
-        <span>
-          {cols.category}:{' '}
-          {item.sub_category
-            ? `${item.sub_category.category_name} / ${item.sub_category.name}`
-            : '—'}
-        </span>
+        <div className="flex-1">
+          <Label htmlFor={`item-${index}-cat`}>{cols.category}</Label>
+          <SubCategorySelect
+            id={`item-${index}-cat`}
+            aria-label={cols.category}
+            value={item.sub_category}
+            onChange={(next) =>
+              onChange({
+                sub_category: next,
+                category_confidence: 1,
+                category_reasoning: undefined,
+              })
+            }
+          />
+        </div>
+        {item.category_reasoning && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                className="mt-7 text-muted-foreground"
+                aria-label={t('review.items.categoryReasoningHeading')}
+              >
+                <Info className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{item.category_reasoning}</TooltipContent>
+          </Tooltip>
+        )}
       </div>
     </div>
   );

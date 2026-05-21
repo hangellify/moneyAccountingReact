@@ -37,6 +37,7 @@
         "category": "Category"
       },
       "lowConfidence": "Low category confidence",
+      "categoryReasoningHeading": "Why this category?",
       "subCategoryPlaceholder": "—",
       "subCategoryLoading": "Loading categories…",
       "subCategoryError": "Couldn't load categories",

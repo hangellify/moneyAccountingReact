@@ -1,7 +1,13 @@
 import type { ReactElement } from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
+import { SubCategorySelect } from '@/components/categories/SubCategorySelect';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import type { BillEditItem } from '@/types/bills';
 
 const UNITS: BillEditItem['unit'][] = ['', 'kg', 'g', 'l', 'ml', 'piece'];
@@ -93,17 +99,37 @@ export function BillItemRow({
       </td>
       <td className="px-3 py-2 text-muted-foreground">
         <div className="flex items-center gap-1.5">
-          {item.category_confidence < 0.5 && (
+          {item.category_confidence < 0.5 && item.sub_category && (
             <AlertTriangle
               className="h-4 w-4 text-yellow-600"
               aria-label={t('review.items.lowConfidence')}
             />
           )}
-          <span>
-            {item.sub_category
-              ? `${item.sub_category.category_name} / ${item.sub_category.name}`
-              : '—'}
-          </span>
+          <SubCategorySelect
+            aria-label={cols.category}
+            value={item.sub_category}
+            onChange={(next) =>
+              onChange({
+                sub_category: next,
+                category_confidence: 1,
+                category_reasoning: undefined,
+              })
+            }
+          />
+          {item.category_reasoning && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="text-muted-foreground"
+                  aria-label={t('review.items.categoryReasoningHeading')}
+                >
+                  <Info className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{item.category_reasoning}</TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </td>
     </tr>

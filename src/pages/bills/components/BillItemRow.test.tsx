@@ -1,8 +1,12 @@
 import '@/i18n';
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
+import MockAdapter from 'axios-mock-adapter';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { apiClient } from '@/auth/apiClient';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { BillItemRow } from './BillItemRow';
 import type { BillEditItem } from '@/types/bills';
 
@@ -24,12 +28,19 @@ function renderRow(
   item: BillEditItem,
   onChange = vi.fn()
 ): ReturnType<typeof render> {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   return render(
-    <table>
-      <tbody>
-        <BillItemRow item={item} index={0} onChange={onChange} />
-      </tbody>
-    </table>
+    <QueryClientProvider client={client}>
+      <TooltipProvider>
+        <table>
+          <tbody>
+            <BillItemRow item={item} index={0} onChange={onChange} />
+          </tbody>
+        </table>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 
@@ -43,19 +54,26 @@ function StatefulRow({
   onPatch: (patch: Partial<BillEditItem>) => void;
 }): React.ReactElement {
   const [item, setItem] = useState(initial);
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   return (
-    <table>
-      <tbody>
-        <BillItemRow
-          item={item}
-          index={0}
-          onChange={(patch) => {
-            setItem((prev) => ({ ...prev, ...patch }));
-            onPatch(patch);
-          }}
-        />
-      </tbody>
-    </table>
+    <QueryClientProvider client={client}>
+      <TooltipProvider>
+        <table>
+          <tbody>
+            <BillItemRow
+              item={item}
+              index={0}
+              onChange={(patch) => {
+                setItem((prev) => ({ ...prev, ...patch }));
+                onPatch(patch);
+              }}
+            />
+          </tbody>
+        </table>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 
@@ -85,6 +103,47 @@ describe('BillItemRow (refactor parity)', () => {
     renderRow(makeItem({ unit: 'kg', weight_kg: 0.5, price_per_kg: 10 }));
     expect(screen.getByLabelText(/weight \(kg\)/i)).not.toBeDisabled();
     expect(screen.getByDisplayValue('0.5')).toBeInTheDocument();
+  });
+});
+
+describe('BillItemRow — sub-category', () => {
+  let mock: MockAdapter;
+  beforeEach(() => {
+    mock = new MockAdapter(apiClient);
+  });
+  afterEach(() => {
+    mock.restore();
+  });
+
+  it('emits sub_category, confidence=1 and clears reasoning when picked', async () => {
+    mock.onGet('/sub-categories').reply(200, [
+      {
+        id: '1',
+        name: 'milk',
+        category_id: 'c1',
+        category_name: 'Dairy',
+        created_at: '',
+        updated_at: '',
+      },
+    ]);
+    const onChange = vi.fn();
+    renderRow(
+      makeItem({ category_confidence: 0.3, category_reasoning: 'guess' }),
+      onChange
+    );
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'milk' })).toBeInTheDocument();
+    });
+    await userEvent.selectOptions(
+      screen.getByRole('combobox', { name: /category/i }),
+      '1'
+    );
+
+    expect(onChange).toHaveBeenLastCalledWith({
+      sub_category: { id: '1', name: 'milk', category_name: 'Dairy' },
+      category_confidence: 1,
+      category_reasoning: undefined,
+    });
   });
 });
 
