@@ -45,7 +45,8 @@
       "deleteAria": "Delete item",
       "deleteTitle": "Delete this item?",
       "deleteDescription": "This will remove \"{{name}}\" from the bill.",
-      "deleteUnnamed": "this item"
+      "deleteUnnamed": "this item",
+      "addRow": "Add item"
     },
     "discardTitle": "Discard this bill?",
     "discardDescription": "Your edits will be lost."

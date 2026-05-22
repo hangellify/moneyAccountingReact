@@ -34,6 +34,7 @@ export function BillItemRow({
     <tr className="border-t">
       <td className="px-3 py-2">
         <Input
+          data-row-name={index}
           value={item.name}
           onChange={(e) => onChange({ name: e.target.value })}
         />

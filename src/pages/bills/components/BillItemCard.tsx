@@ -48,6 +48,7 @@ export function BillItemCard({
         <Label htmlFor={`item-${index}-name`}>{cols.name}</Label>
         <Input
           id={`item-${index}-name`}
+          data-row-name={index}
           value={item.name}
           onChange={(e) => onChange({ name: e.target.value })}
         />

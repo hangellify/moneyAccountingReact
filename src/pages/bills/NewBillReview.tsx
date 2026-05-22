@@ -19,6 +19,7 @@ export function NewBillReview(): ReactElement | null {
   const updateEdits = useBillDraftStore((s) => s.updateEdits);
   const updateItem = useBillDraftStore((s) => s.updateItem);
   const removeItem = useBillDraftStore((s) => s.removeItem);
+  const addItem = useBillDraftStore((s) => s.addItem);
   const clear = useBillDraftStore((s) => s.clear);
 
   const [confirmCancel, setConfirmCancel] = useState(false);
@@ -100,6 +101,10 @@ export function NewBillReview(): ReactElement | null {
               onRemoveItem={(i) => {
                 setDirty(true);
                 removeItem(i);
+              }}
+              onAddItem={() => {
+                setDirty(true);
+                return addItem();
               }}
             />
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
