@@ -86,7 +86,9 @@ describe('BillItemRow (refactor parity)', () => {
 
   it('emits patches when the name field changes', async () => {
     const onPatch = vi.fn();
-    render(<StatefulRow initial={makeItem({ name: 'Bread' })} onPatch={onPatch} />);
+    render(
+      <StatefulRow initial={makeItem({ name: 'Bread' })} onPatch={onPatch} />
+    );
     const input = screen.getByDisplayValue('Bread');
     await userEvent.clear(input);
     await userEvent.type(input, 'Sourdough');
@@ -167,10 +169,7 @@ describe('BillItemRow — sub-category', () => {
         </TooltipProvider>
       </QueryClientProvider>
     );
-    await userEvent.click(
-      screen.getByRole('button', { name: /delete item/i })
-    );
+    await userEvent.click(screen.getByRole('button', { name: /delete item/i }));
     expect(onDelete).toHaveBeenCalled();
   });
 });
-

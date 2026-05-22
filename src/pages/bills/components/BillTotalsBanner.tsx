@@ -3,7 +3,7 @@ import { AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface BillTotalsBannerProps {
-  items: Array<{ final_price: number }>;
+  items: { final_price: number }[];
   totalAmount: number;
   currency: string;
 }
