@@ -6,6 +6,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { BillReviewFields } from './components/BillReviewFields';
 import { BillItemsTable } from './components/BillItemsTable';
+import { BillTotalsBanner } from './components/BillTotalsBanner';
 import { useBillDraftStore } from '@/stores/billDraftStore';
 import { toast } from '@/hooks/use-toast';
 
@@ -95,6 +96,11 @@ export function NewBillReview(): ReactElement | null {
 
           <div className="space-y-6">
             <BillReviewFields edits={edits} onChange={handleEditsChange} />
+            <BillTotalsBanner
+              items={edits.items}
+              totalAmount={edits.total_amount}
+              currency={edits.currency}
+            />
             <BillItemsTable
               items={edits.items}
               onUpdateItem={handleItemChange}

@@ -46,7 +46,13 @@
       "deleteTitle": "Delete this item?",
       "deleteDescription": "This will remove \"{{name}}\" from the bill.",
       "deleteUnnamed": "this item",
-      "addRow": "Add item"
+      "addRow": "Add item",
+      "totalsMismatch": {
+        "heading": "Items don't match the bill total",
+        "itemsSum": "Items sum: {{value}} {{currency}}",
+        "headerTotal": "Header total: {{value}} {{currency}}",
+        "difference": "Difference: {{value}} {{currency}}"
+      }
     },
     "discardTitle": "Discard this bill?",
     "discardDescription": "Your edits will be lost."
