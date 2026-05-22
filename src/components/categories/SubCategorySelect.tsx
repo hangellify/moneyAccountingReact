@@ -9,7 +9,7 @@ interface SubCategorySelectProps {
   onChange: (next: SubCategoryRef | null) => void;
   disabled?: boolean;
   id?: string;
-  'aria-label'?: string;
+  'aria-label'?: string | undefined;
 }
 
 export function SubCategorySelect({

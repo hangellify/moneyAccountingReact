@@ -36,7 +36,7 @@ export interface BillEditItem {
   final_price: number;
   sub_category: SubCategoryRef | null;
   category_confidence: number;
-  category_reasoning?: string;
+  category_reasoning?: string | undefined;
 }
 
 export interface BillEdits {
