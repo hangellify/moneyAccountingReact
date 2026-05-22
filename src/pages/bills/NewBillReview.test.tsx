@@ -130,4 +130,43 @@ describe('NewBillReview', () => {
       expect(document.querySelector('[data-row-name="0"]')).not.toBeNull();
     });
   });
+
+  it('add → edit → delete loop shows + clears the totals banner', async () => {
+    seedDraft();
+    render(
+      <Providers>
+        <MemoryRouter initialEntries={['/bills/review']}>
+          <Routes>
+            <Route path="/bills/review" element={<NewBillReview />} />
+          </Routes>
+        </MemoryRouter>
+      </Providers>
+    );
+
+    // Total is 10 from seedDraft, items are []. 0 vs 10 → banner visible.
+    expect(await screen.findByText(/items don't match/i)).toBeInTheDocument();
+
+    // Add a row, then set its final_price to 10 → banner clears.
+    await userEvent.click(screen.getByRole('button', { name: /add item/i }));
+    // Both desktop row + mobile card render in JSDOM (md:hidden is CSS only),
+    // so multiple inputs share the testid. Drive the first one — they all
+    // map to the same store item.
+    const priceInputs = await screen.findAllByTestId('item-final-price-0');
+    const priceInput = priceInputs[0]!;
+    await userEvent.clear(priceInput);
+    await userEvent.type(priceInput, '10');
+
+    await waitFor(() => {
+      expect(screen.queryByText(/items don't match/i)).toBeNull();
+    });
+
+    // Delete the row → banner returns. Both row + card expose their own
+    // delete button; click the first.
+    const deleteButtons = screen.getAllByRole('button', {
+      name: /delete item/i,
+    });
+    await userEvent.click(deleteButtons[0]!);
+    await userEvent.click(screen.getByRole('button', { name: /^confirm$/i }));
+    expect(await screen.findByText(/items don't match/i)).toBeInTheDocument();
+  });
 });
