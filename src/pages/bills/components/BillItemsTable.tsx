@@ -83,21 +83,21 @@ export function BillItemsTable({
         ))}
       </div>
 
-      <ConfirmDialog
-        open={pendingDelete !== null}
-        onOpenChange={(o) => !o && setPendingDelete(null)}
-        title={t('review.items.deleteTitle')}
-        description={
-          pendingDelete
-            ? t('review.items.deleteDescription', { name: pendingDelete.name })
-            : undefined
-        }
-        variant="destructive"
-        onConfirm={() => {
-          if (pendingDelete) onRemoveItem(pendingDelete.index);
-          setPendingDelete(null);
-        }}
-      />
+      {pendingDelete && (
+        <ConfirmDialog
+          open
+          onOpenChange={(o) => !o && setPendingDelete(null)}
+          title={t('review.items.deleteTitle')}
+          description={t('review.items.deleteDescription', {
+            name: pendingDelete.name,
+          })}
+          variant="destructive"
+          onConfirm={() => {
+            onRemoveItem(pendingDelete.index);
+            setPendingDelete(null);
+          }}
+        />
+      )}
 
       <Button
         type="button"
@@ -105,11 +105,23 @@ export function BillItemsTable({
         className="self-start"
         onClick={() => {
           const newIndex = onAddItem();
+          // The desktop row and the mobile card both render the new input
+          // with the same `data-row-name`, but only one is visible per
+          // viewport — focusing a `display:none` element is a no-op. Pick
+          // the rendered one via offsetParent.
           queueMicrotask(() => {
-            const el = document.querySelector<HTMLInputElement>(
+            const els = document.querySelectorAll<HTMLInputElement>(
               `[data-row-name="${newIndex}"]`
             );
-            el?.focus();
+            for (const el of els) {
+              if (el.offsetParent !== null) {
+                el.focus();
+                return;
+              }
+            }
+            // Fallback for environments (e.g. jsdom) that don't compute
+            // layout — focus the first one so tests still observe focus.
+            els[0]?.focus();
           });
         }}
       >
