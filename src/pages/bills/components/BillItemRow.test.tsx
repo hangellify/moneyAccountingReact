@@ -145,5 +145,32 @@ describe('BillItemRow — sub-category', () => {
       category_reasoning: undefined,
     });
   });
+
+  it('calls onDelete when the trash button is clicked', async () => {
+    const onDelete = vi.fn();
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={client}>
+        <TooltipProvider>
+          <table>
+            <tbody>
+              <BillItemRow
+                item={makeItem()}
+                index={0}
+                onChange={vi.fn()}
+                onDelete={onDelete}
+              />
+            </tbody>
+          </table>
+        </TooltipProvider>
+      </QueryClientProvider>
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: /delete item/i })
+    );
+    expect(onDelete).toHaveBeenCalled();
+  });
 });
 

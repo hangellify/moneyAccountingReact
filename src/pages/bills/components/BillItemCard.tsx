@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { AlertTriangle, Info } from 'lucide-react';
+import { AlertTriangle, Info, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,12 +17,14 @@ interface BillItemCardProps {
   item: BillEditItem;
   index: number;
   onChange: (patch: Partial<BillEditItem>) => void;
+  onDelete?: () => void;
 }
 
 export function BillItemCard({
   item,
   index,
   onChange,
+  onDelete,
 }: BillItemCardProps): ReactElement {
   const { t } = useTranslation('bills');
   const cols = t('review.items.columns', { returnObjects: true }) as Record<
@@ -31,7 +33,17 @@ export function BillItemCard({
   >;
 
   return (
-    <div className="rounded-md border p-3 space-y-2">
+    <div className="relative rounded-md border p-3 space-y-2">
+      {onDelete && (
+        <button
+          type="button"
+          aria-label={t('review.items.deleteAria')}
+          className="absolute right-2 top-2 text-muted-foreground hover:text-destructive"
+          onClick={onDelete}
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      )}
       <div className="space-y-1">
         <Label htmlFor={`item-${index}-name`}>{cols.name}</Label>
         <Input

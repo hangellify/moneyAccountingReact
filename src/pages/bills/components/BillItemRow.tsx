@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { AlertTriangle, Info } from 'lucide-react';
+import { AlertTriangle, Info, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { SubCategorySelect } from '@/components/categories/SubCategorySelect';
@@ -16,12 +16,14 @@ interface BillItemRowProps {
   item: BillEditItem;
   index: number;
   onChange: (patch: Partial<BillEditItem>) => void;
+  onDelete?: () => void;
 }
 
 export function BillItemRow({
   item,
   index,
   onChange,
+  onDelete,
 }: BillItemRowProps): ReactElement {
   const { t } = useTranslation('bills');
   const cols = t('review.items.columns', { returnObjects: true }) as Record<
@@ -132,6 +134,18 @@ export function BillItemRow({
           )}
         </div>
       </td>
+      {onDelete && (
+        <td className="px-3 py-2 w-12">
+          <button
+            type="button"
+            aria-label={t('review.items.deleteAria')}
+            className="text-muted-foreground hover:text-destructive"
+            onClick={onDelete}
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </td>
+      )}
     </tr>
   );
 }

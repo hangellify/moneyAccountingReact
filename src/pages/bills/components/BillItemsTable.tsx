@@ -1,5 +1,6 @@
-import type { ReactElement } from 'react';
+import { useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import type { BillEditItem } from '@/types/bills';
 import { BillItemRow } from './BillItemRow';
 import { BillItemCard } from './BillItemCard';
@@ -7,17 +8,30 @@ import { BillItemCard } from './BillItemCard';
 interface BillItemsTableProps {
   items: BillEditItem[];
   onUpdateItem: (index: number, patch: Partial<BillEditItem>) => void;
+  onRemoveItem: (index: number) => void;
 }
 
 export function BillItemsTable({
   items,
   onUpdateItem,
+  onRemoveItem,
 }: BillItemsTableProps): ReactElement {
   const { t } = useTranslation('bills');
   const cols = t('review.items.columns', { returnObjects: true }) as Record<
     string,
     string
   >;
+  const [pendingDelete, setPendingDelete] = useState<{
+    index: number;
+    name: string;
+  } | null>(null);
+
+  const requestDelete = (index: number, item: BillEditItem): void => {
+    setPendingDelete({
+      index,
+      name: item.name || t('review.items.deleteUnnamed'),
+    });
+  };
 
   return (
     <section className="space-y-3">
@@ -35,6 +49,7 @@ export function BillItemsTable({
               <th className="px-3 py-2">{cols.pricePerKg}</th>
               <th className="px-3 py-2">{cols.finalPrice}</th>
               <th className="px-3 py-2">{cols.category}</th>
+              <th className="px-3 py-2 w-12" />
             </tr>
           </thead>
           <tbody>
@@ -44,6 +59,7 @@ export function BillItemsTable({
                 item={item}
                 index={i}
                 onChange={(patch) => onUpdateItem(i, patch)}
+                onDelete={() => requestDelete(i, item)}
               />
             ))}
           </tbody>
@@ -58,9 +74,26 @@ export function BillItemsTable({
             item={item}
             index={i}
             onChange={(patch) => onUpdateItem(i, patch)}
+            onDelete={() => requestDelete(i, item)}
           />
         ))}
       </div>
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        onOpenChange={(o) => !o && setPendingDelete(null)}
+        title={t('review.items.deleteTitle')}
+        description={
+          pendingDelete
+            ? t('review.items.deleteDescription', { name: pendingDelete.name })
+            : undefined
+        }
+        variant="destructive"
+        onConfirm={() => {
+          if (pendingDelete) onRemoveItem(pendingDelete.index);
+          setPendingDelete(null);
+        }}
+      />
     </section>
   );
 }

@@ -41,7 +41,11 @@
       "subCategoryPlaceholder": "—",
       "subCategoryLoading": "Loading categories…",
       "subCategoryError": "Couldn't load categories",
-      "subCategoryRetry": "Retry"
+      "subCategoryRetry": "Retry",
+      "deleteAria": "Delete item",
+      "deleteTitle": "Delete this item?",
+      "deleteDescription": "This will remove \"{{name}}\" from the bill.",
+      "deleteUnnamed": "this item"
     },
     "discardTitle": "Discard this bill?",
     "discardDescription": "Your edits will be lost."

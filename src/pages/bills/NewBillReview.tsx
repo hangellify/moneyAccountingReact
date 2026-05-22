@@ -18,6 +18,7 @@ export function NewBillReview(): ReactElement | null {
   const edits = useBillDraftStore((s) => s.edits);
   const updateEdits = useBillDraftStore((s) => s.updateEdits);
   const updateItem = useBillDraftStore((s) => s.updateItem);
+  const removeItem = useBillDraftStore((s) => s.removeItem);
   const clear = useBillDraftStore((s) => s.clear);
 
   const [confirmCancel, setConfirmCancel] = useState(false);
@@ -93,7 +94,14 @@ export function NewBillReview(): ReactElement | null {
 
           <div className="space-y-6">
             <BillReviewFields edits={edits} onChange={handleEditsChange} />
-            <BillItemsTable items={edits.items} onUpdateItem={handleItemChange} />
+            <BillItemsTable
+              items={edits.items}
+              onUpdateItem={handleItemChange}
+              onRemoveItem={(i) => {
+                setDirty(true);
+                removeItem(i);
+              }}
+            />
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button type="button" variant="outline" onClick={handleCancel}>
                 {t('common:actions.cancel')}
