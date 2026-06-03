@@ -34,6 +34,6 @@ describe('DateRangePicker', () => {
     render(
       <DateRangePicker from="2026-06-30" to="2026-01-01" onChange={vi.fn()} />
     );
-    expect(screen.getByText(/dateInvalid/i)).toBeInTheDocument();
+    expect(screen.getByText(/end date is before start date/i)).toBeInTheDocument();
   });
 });
