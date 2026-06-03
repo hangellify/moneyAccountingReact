@@ -1,6 +1,6 @@
 // src/pages/bills/BillDetailDrawer.tsx
 import type { ReactElement } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Sheet,
@@ -14,13 +14,14 @@ import { BillDetailContent } from './components/BillDetailContent';
 export function BillDetailDrawer(): ReactElement | null {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation('bills');
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   if (!id) return null;
 
   const handleOpenChange = (next: boolean): void => {
-    if (!next) navigate('..');
+    if (!next) navigate({ pathname: '..', search: location.search });
   };
 
   return (

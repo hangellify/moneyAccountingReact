@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import { useEffect, useRef } from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { ConfirmedBillsFilters } from './components/ConfirmedBillsFilters';
@@ -12,6 +12,7 @@ import { useConfirmedBills } from '@/hooks/useConfirmedBills';
 export function ConfirmedBills(): ReactElement {
   const { t } = useTranslation('bills');
   const navigate = useNavigate();
+  const location = useLocation();
   const { filters, page, limit, setFilters, setPage, clearFilters } =
     useConfirmedBillsFilters();
   const q = useConfirmedBills(filters, page, limit);
@@ -93,7 +94,7 @@ export function ConfirmedBills(): ReactElement {
           <>
             <ConfirmedBillsTable
               bills={q.data.data}
-              onRowClick={(id) => navigate(`./${id}`)}
+              onRowClick={(id) => navigate({ pathname: `./${id}`, search: location.search })}
             />
             <Pagination meta={q.data.meta} onPageChange={setPage} />
           </>
