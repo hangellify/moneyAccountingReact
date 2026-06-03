@@ -110,6 +110,10 @@ export const CURRENCY = {
   XCD: 'XCD',
   GYD: 'GYD',
   SRD: 'SRD',
+  // Australasian
+  AUD: 'AUD',
+  NZD: 'NZD',
+  FJD: 'FJD',
 } as const;
 
 /**
@@ -118,7 +122,7 @@ export const CURRENCY = {
 export type Currency = (typeof CURRENCY)[keyof typeof CURRENCY] | (string & {});
 
 export const CURRENCY_REGION_ORDER: readonly {
-  label: 'European' | 'Asian' | 'African' | 'American';
+  label: 'European' | 'Asian' | 'African' | 'American' | 'Australasian';
   codes: readonly (keyof typeof CURRENCY)[];
 }[] = [
   {
@@ -244,5 +248,9 @@ export const CURRENCY_REGION_ORDER: readonly {
       'GYD',
       'SRD',
     ],
+  },
+  {
+    label: 'Australasian',
+    codes: ['AUD', 'NZD', 'FJD'],
   },
 ];
