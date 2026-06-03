@@ -25,8 +25,6 @@ export const CURRENCY = {
   GTQ: 'GTQ', HNL: 'HNL', NIO: 'NIO', CRC: 'CRC', PAB: 'PAB', DOP: 'DOP',
   HTG: 'HTG', JMD: 'JMD', BBD: 'BBD', BZD: 'BZD', TTD: 'TTD', XCD: 'XCD',
   GYD: 'GYD', SRD: 'SRD',
-  // Australasian (used in Asian/American mixes; kept for completeness)
-  AUD: 'AUD', NZD: 'NZD', FJI: 'FJI',
 } as const;
 
 /**
@@ -35,12 +33,11 @@ export const CURRENCY = {
 export type Currency = (typeof CURRENCY)[keyof typeof CURRENCY] | (string & {});
 
 export const CURRENCY_REGION_ORDER: ReadonlyArray<{
-  label: 'European' | 'Asian' | 'African' | 'American' | 'Australasian';
+  label: 'European' | 'Asian' | 'African' | 'American';
   codes: ReadonlyArray<keyof typeof CURRENCY>;
 }> = [
   { label: 'European', codes: ['EUR','GBP','RON','PLN','MDL','CZK','HUF','BGN','HRK','DKK','SEK','NOK','CHF','ISK','RSD','BAM','ALL','MKD','UAH','BYN','RUB','TRY'] },
   { label: 'Asian',    codes: ['JPY','CNY','INR','KRW','THB','SGD','MYR','IDR','PHP','VND','HKD','TWD','PKR','BDT','LKR','NPR','MMK','KHR','LAK','MNT','KZT','UZS','AZN','AMD','GEL','ILS','JOD','LBP','SAR','AED','QAR','KWD','BHD','OMR','IRR','IQD'] },
   { label: 'African',  codes: ['ZAR','EGP','NGN','KES','GHS','ETB','UGX','TZS','RWF','XOF','XAF','MAD','TND','DZD','LYD','AOA','MZN','ZMW','BWP','MUR'] },
   { label: 'American', codes: ['USD','CAD','MXN','BRL','ARS','CLP','COP','PEN','VES','UYU','PYG','BOB','GTQ','HNL','NIO','CRC','PAB','DOP','HTG','JMD','BBD','BZD','TTD','XCD','GYD','SRD'] },
-  { label: 'Australasian', codes: ['AUD','NZD','FJI'] },
 ];
