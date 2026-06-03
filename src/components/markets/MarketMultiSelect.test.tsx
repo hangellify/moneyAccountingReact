@@ -60,7 +60,7 @@ describe('MarketMultiSelect', () => {
     expect(onChange).toHaveBeenCalledWith(['Lidl']);
   });
 
-  it('shows "All markets" when value is empty', async () => {
+  it('shows "All markets" when value is empty', () => {
     mock.onGet('/markets').reply(200, []);
     render(
       wrap(
@@ -70,7 +70,7 @@ describe('MarketMultiSelect', () => {
     expect(screen.getByText(/marketsAll/i)).toBeInTheDocument();
   });
 
-  it('summarizes 1-2 selected names, shows count for 3+', async () => {
+  it('summarizes 1-2 selected names, shows count for 3+', () => {
     mock.onGet('/markets').reply(200, []);
     const { rerender } = render(
       wrap(

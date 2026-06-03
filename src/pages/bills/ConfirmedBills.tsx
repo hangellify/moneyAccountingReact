@@ -65,7 +65,11 @@ export function ConfirmedBills(): ReactElement {
             <p className="text-sm text-destructive">
               {t('confirmed.table.loadError')}
             </p>
-            <Button variant="outline" size="sm" onClick={() => void q.refetch()}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void q.refetch()}
+            >
               {t('confirmed.filters.retry')}
             </Button>
           </div>
@@ -94,7 +98,12 @@ export function ConfirmedBills(): ReactElement {
           <>
             <ConfirmedBillsTable
               bills={q.data.data}
-              onRowClick={(id) => navigate({ pathname: `./${id}`, search: location.search })}
+              onRowClick={(id) => {
+                void navigate({
+                  pathname: `./${id}`,
+                  search: location.search,
+                });
+              }}
             />
             <Pagination meta={q.data.meta} onPageChange={setPage} />
           </>

@@ -1,19 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
+
+const noop = (): void => {
+  /* SSR / unsupported */
+};
 
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState<boolean>(() => {
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      if (typeof window === 'undefined' || !window.matchMedia) return noop;
+      const mql = window.matchMedia(query);
+      mql.addEventListener('change', callback);
+      return (): void => mql.removeEventListener('change', callback);
+    },
+    [query]
+  );
+
+  const getSnapshot = useCallback((): boolean => {
     if (typeof window === 'undefined' || !window.matchMedia) return false;
     return window.matchMedia(query).matches;
-  });
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return;
-    const mql = window.matchMedia(query);
-    const onChange = (e: MediaQueryListEvent): void => setMatches(e.matches);
-    setMatches(mql.matches);
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
   }, [query]);
 
-  return matches;
+  return useSyncExternalStore(subscribe, getSnapshot, () => false);
 }

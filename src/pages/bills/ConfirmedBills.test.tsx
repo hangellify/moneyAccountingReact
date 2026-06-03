@@ -57,10 +57,24 @@ describe('ConfirmedBills (integration)', () => {
   beforeEach(() => {
     mock = new MockAdapter(apiClient);
     mock.onGet('/markets').reply(200, [
-      { id: '1', name: 'Lidl', address: null, city: 'Bucharest',
-        country: 'RO', created_at: '2026-01-10T08:00:00Z', bill_count: 5 },
-      { id: '2', name: 'Kaufland', address: null, city: null,
-        country: null, created_at: '2026-02-01T08:00:00Z', bill_count: 3 },
+      {
+        id: '1',
+        name: 'Lidl',
+        address: null,
+        city: 'Bucharest',
+        country: 'RO',
+        created_at: '2026-01-10T08:00:00Z',
+        bill_count: 5,
+      },
+      {
+        id: '2',
+        name: 'Kaufland',
+        address: null,
+        city: null,
+        country: null,
+        created_at: '2026-02-01T08:00:00Z',
+        bill_count: 3,
+      },
     ]);
   });
   afterEach(() => mock.restore());
@@ -69,21 +83,30 @@ describe('ConfirmedBills (integration)', () => {
     mock.onGet('/bills').reply((config) => {
       const p = config.params as Record<string, unknown>;
       if (p.page === '2') {
-        return [200, {
-          data: [fixture('p2-a', 99)],
-          meta: { total: 21, page: 2, limit: 20, total_pages: 2 },
-        }];
+        return [
+          200,
+          {
+            data: [fixture('p2-a', 99)],
+            meta: { total: 21, page: 2, limit: 20, total_pages: 2 },
+          },
+        ];
       }
       if (p.amount_range === 'gt_100') {
-        return [200, {
-          data: [fixture('a-1', 150), fixture('a-2', 200)],
-          meta: { total: 2, page: 1, limit: 20, total_pages: 1 },
-        }];
+        return [
+          200,
+          {
+            data: [fixture('a-1', 150), fixture('a-2', 200)],
+            meta: { total: 2, page: 1, limit: 20, total_pages: 1 },
+          },
+        ];
       }
-      return [200, {
-        data: [fixture('b1', 10), fixture('b2', 20)],
-        meta: { total: 21, page: 1, limit: 20, total_pages: 2 },
-      }];
+      return [
+        200,
+        {
+          data: [fixture('b1', 10), fixture('b2', 20)],
+          meta: { total: 21, page: 1, limit: 20, total_pages: 2 },
+        },
+      ];
     });
     mock.onGet('/bills/a-1').reply(200, {
       ...fixture('a-1', 150),

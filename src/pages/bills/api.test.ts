@@ -149,7 +149,9 @@ describe('billsApi.list', () => {
           : typeof serializer === 'object' && serializer !== null
             ? (serializer as { serialize: (p: unknown) => string }).serialize
             : null;
-      const url = serializeFn ? serializeFn(config.params) : '';
+      const url = serializeFn
+        ? serializeFn(config.params as Record<string, unknown>)
+        : '';
       expect(url).toContain('market_names=Lidl');
       expect(url).toContain('market_names=Kaufland');
       return [

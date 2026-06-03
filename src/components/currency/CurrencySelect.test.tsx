@@ -23,8 +23,6 @@ describe('CurrencySelect', () => {
 
   it('reflects the controlled value', () => {
     render(<CurrencySelect value="USD" onChange={vi.fn()} />);
-    expect((screen.getByRole('combobox') as HTMLSelectElement).value).toBe(
-      'USD'
-    );
+    expect(screen.getByRole<HTMLSelectElement>('combobox').value).toBe('USD');
   });
 });

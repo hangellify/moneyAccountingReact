@@ -14,13 +14,15 @@ import {
 
 function billsParamsSerializer(params: Record<string, unknown>): string {
   const sp = new URLSearchParams();
+  const append = (key: string, v: unknown): void => {
+    if (typeof v === 'string') sp.append(key, v);
+    else if (typeof v === 'number' || typeof v === 'boolean')
+      sp.append(key, String(v));
+  };
   for (const [key, value] of Object.entries(params)) {
     if (value == null) continue;
-    if (Array.isArray(value)) {
-      for (const v of value) sp.append(key, String(v));
-    } else {
-      sp.append(key, String(value));
-    }
+    if (Array.isArray(value)) value.forEach((v) => append(key, v));
+    else append(key, value);
   }
   return sp.toString();
 }

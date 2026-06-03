@@ -3,7 +3,13 @@ import '@/i18n';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import {
+  MemoryRouter,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MockAdapter from 'axios-mock-adapter';
 import { apiClient } from '@/auth/apiClient';
@@ -37,14 +43,23 @@ function renderAt(path: string): void {
 
 describe('BillDetailDrawer', () => {
   let mock: MockAdapter;
-  beforeEach(() => { mock = new MockAdapter(apiClient); });
-  afterEach(() => { mock.restore(); });
+  beforeEach(() => {
+    mock = new MockAdapter(apiClient);
+  });
+  afterEach(() => {
+    mock.restore();
+  });
 
   it('opens for /bills/confirmed/:id and renders detail content', async () => {
     mock.onGet('/bills/b1').reply(200, {
-      id: 'b1', bill_date: '2026-05-19T00:00:00Z', total_amount: 10,
-      currency: 'EUR', description: null, market: null,
-      created_at: '2026-05-19T10:00:00Z', items: [],
+      id: 'b1',
+      bill_date: '2026-05-19T00:00:00Z',
+      total_amount: 10,
+      currency: 'EUR',
+      description: null,
+      market: null,
+      created_at: '2026-05-19T10:00:00Z',
+      items: [],
     });
     renderAt('/bills/confirmed/b1');
     await waitFor(() => screen.getByText(/bill details/i));
@@ -52,9 +67,14 @@ describe('BillDetailDrawer', () => {
 
   it('navigates back to parent route when closed via Esc', async () => {
     mock.onGet('/bills/b1').reply(200, {
-      id: 'b1', bill_date: '2026-05-19T00:00:00Z', total_amount: 10,
-      currency: 'EUR', description: null, market: null,
-      created_at: '2026-05-19T10:00:00Z', items: [],
+      id: 'b1',
+      bill_date: '2026-05-19T00:00:00Z',
+      total_amount: 10,
+      currency: 'EUR',
+      description: null,
+      market: null,
+      created_at: '2026-05-19T10:00:00Z',
+      items: [],
     });
     renderAt('/bills/confirmed/b1');
     await waitFor(() => screen.getByText(/bill details/i));

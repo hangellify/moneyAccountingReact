@@ -21,7 +21,7 @@ export function BillDetailDrawer(): ReactElement | null {
   if (!id) return null;
 
   const handleOpenChange = (next: boolean): void => {
-    if (!next) navigate({ pathname: '..', search: location.search });
+    if (!next) void navigate({ pathname: '..', search: location.search });
   };
 
   return (
