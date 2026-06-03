@@ -22,6 +22,16 @@ const NewBillReview = lazy(() =>
     default: m.NewBillReview,
   }))
 );
+const ConfirmedBills = lazy(() =>
+  import('@/pages/bills/ConfirmedBills').then((m) => ({
+    default: m.ConfirmedBills,
+  }))
+);
+const BillDetailDrawer = lazy(() =>
+  import('@/pages/bills/BillDetailDrawer').then((m) => ({
+    default: m.BillDetailDrawer,
+  }))
+);
 
 function LoadingFallback(): ReactElement {
   return (
@@ -57,6 +67,16 @@ function App(): ReactElement {
                 </RequireAuth>
               }
             />
+            <Route
+              path="/bills/confirmed"
+              element={
+                <RequireAuth>
+                  <ConfirmedBills />
+                </RequireAuth>
+              }
+            >
+              <Route path=":id" element={<BillDetailDrawer />} />
+            </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
