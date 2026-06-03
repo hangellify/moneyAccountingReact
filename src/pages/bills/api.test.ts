@@ -157,7 +157,11 @@ describe('billsApi.list', () => {
         { data: [], meta: { total: 0, page: 1, limit: 20, total_pages: 0 } },
       ];
     });
-    await billsApi.list({ ...empty, market_names: ['Lidl', 'Kaufland'] }, 1, 20);
+    await billsApi.list(
+      { ...empty, market_names: ['Lidl', 'Kaufland'] },
+      1,
+      20
+    );
   });
 });
 

@@ -62,7 +62,9 @@ describe('parseBillsSearchParams', () => {
   });
 
   it('coerces invalid date strings to null', () => {
-    const r = parseBillsSearchParams(p('date_from=not-a-date&date_to=2026-13-99'));
+    const r = parseBillsSearchParams(
+      p('date_from=not-a-date&date_to=2026-13-99')
+    );
     expect(r.filters.date_from).toBeNull();
     expect(r.filters.date_to).toBeNull();
   });

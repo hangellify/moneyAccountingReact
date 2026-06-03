@@ -1,9 +1,5 @@
 import { CURRENCY, type Currency } from '@/const/currency';
-import {
-  DEFAULT_LIMIT,
-  DEFAULT_PAGE,
-  MAX_LIMIT,
-} from '@/types/pagination';
+import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT } from '@/types/pagination';
 import type { ConfirmedBillsFilters } from './buildBillsQueryParams';
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -60,9 +56,7 @@ export interface ParsedBillsSearch {
   limit: number;
 }
 
-export function parseBillsSearchParams(
-  sp: URLSearchParams
-): ParsedBillsSearch {
+export function parseBillsSearchParams(sp: URLSearchParams): ParsedBillsSearch {
   const namesRaw = sp.getAll('market_names').filter((s) => s.length > 0);
   const market_names = [...new Set(namesRaw)];
 

@@ -27,6 +27,8 @@ describe('AmountRangeInput', () => {
 
   it('shows validation message when min > max', () => {
     render(<AmountRangeInput min={500} max={100} onChange={vi.fn()} />);
-    expect(screen.getByText(/minimum cannot be greater than maximum/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/minimum cannot be greater than maximum/i)
+    ).toBeInTheDocument();
   });
 });
